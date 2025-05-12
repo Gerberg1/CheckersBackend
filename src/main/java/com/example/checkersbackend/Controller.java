@@ -3,6 +3,7 @@ package com.example.checkersbackend;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin
 @RestController
 public class Controller {
     @Autowired
@@ -19,7 +20,7 @@ public int[][]getBoard(){
 }
 
 @PostMapping("/move")
-    public void makeMove(@RequestParam String move){
+    public void makeMove(@RequestBody String move){
     br.makeMove(move);
 }
 }
