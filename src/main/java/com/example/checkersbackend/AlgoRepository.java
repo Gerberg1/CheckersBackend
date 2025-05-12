@@ -12,6 +12,8 @@ public class AlgoRepository {
         this.boardRepository = boardRepository;
     }
 
+    private long endTime;
+
 
     public String startAlgo(int[][] board, int depth, boolean isBlack) {
         int bestScore = isBlack ? Integer.MIN_VALUE : Integer.MAX_VALUE;
@@ -20,7 +22,11 @@ public class AlgoRepository {
         int alpha = Integer.MIN_VALUE;
         int beta = Integer.MAX_VALUE;
 
+        endTime = System.currentTimeMillis() + 30_000;
+
         for (String move : boardRepository.getAllLegalMoves(board, isBlack)) {
+
+            if (System.currentTimeMillis() > endTime) break;
             System.out.println(move);
             /*int[][] copyBoard = new int[board.length][];
             for (int i = 0; i < board.length; i++) {
@@ -28,6 +34,8 @@ public class AlgoRepository {
             }*/
             int[][] copyBoard = simulateMove1(board, move);
             int score = alphaBeta(copyBoard, !isBlack, depth, alpha, beta);
+
+
             if ((isBlack && score > bestScore)){
                 bestScore = score;
                 bestMove = move;
@@ -40,9 +48,11 @@ public class AlgoRepository {
             if (alpha >= beta){
                 break;
             }
+            if (System.currentTimeMillis() > endTime || alpha >= beta) break;
         }
         return bestMove;
     }
+
 
 
     public int minMax(int[][] board, boolean isMaxing, int depth) {
@@ -84,12 +94,13 @@ public class AlgoRepository {
         int maxScore = Integer.MIN_VALUE;
         int minScore = Integer.MAX_VALUE;
 
-        if (depth == 0) {
+        if (System.currentTimeMillis() > endTime || depth == 0) {
             return boardValues(board);
         }
         if (isMaxing) {
             maxScore = Integer.MIN_VALUE;
             for (String move : boardRepository.getAllLegalMoves(board, true)) {
+                if (System.currentTimeMillis() > endTime) break;
                /* int[][] copyBoard = new int[board.length][];
                 for (int i = 0; i < board.length; i++) {
                     copyBoard[i] = board[i].clone();
@@ -107,6 +118,7 @@ public class AlgoRepository {
         } else {
             minScore = Integer.MAX_VALUE;
             for (String move : boardRepository.getAllLegalMoves(board, false)) {
+                if (System.currentTimeMillis() > endTime) break;
                 /*int[][] copyBoard = new int[board.length][];
                 for (int i = 0; i < board.length; i++) {
                     copyBoard[i] = board[i].clone();

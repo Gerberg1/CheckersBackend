@@ -11,7 +11,7 @@ public class main {
         br.printBoard();
 
         while (!userinput.equals("e")){
-            String aiMove = (ar.startAlgo(br.board, 10, true));
+            String aiMove = (ar.startAlgo(br.board, 5, true));
             br.makeMove(aiMove);
             br.printBoard();
             System.out.println(aiMove);
