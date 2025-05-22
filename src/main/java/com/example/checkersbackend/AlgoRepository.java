@@ -2,6 +2,8 @@ package com.example.checkersbackend;
 
 import org.springframework.stereotype.Repository;
 
+import java.util.Timer;
+
 @Repository
 public class AlgoRepository {
 
@@ -16,13 +18,14 @@ public class AlgoRepository {
 
 
     public String startAlgo(int[][] board, int depth, boolean isBlack) {
+       // int bestScore = isBlack ?  Integer.MAX_VALUE : Integer.MIN_VALUE;
         int bestScore = isBlack ? Integer.MIN_VALUE : Integer.MAX_VALUE;
         String bestMove = "";
 
         int alpha = Integer.MIN_VALUE;
         int beta = Integer.MAX_VALUE;
 
-        endTime = System.currentTimeMillis() + 30_000;
+        endTime = System.currentTimeMillis() + 5_000;
 
         for (String move : boardRepository.getAllLegalMoves(board, isBlack)) {
 
@@ -33,7 +36,7 @@ public class AlgoRepository {
                 copyBoard[i] = board[i].clone();
             }*/
             int[][] copyBoard = simulateMove1(board, move);
-            int score = alphaBeta(copyBoard, !isBlack, depth, alpha, beta);
+            int score = alphaBeta(copyBoard, isBlack, depth, alpha, beta);
 
 
             if ((isBlack && score > bestScore)){
@@ -159,6 +162,13 @@ public class AlgoRepository {
                 }
             }
         }
+        if (boardRepository.checkWinnerBlack()){
+            score=score+1000;
+        }
+        if (boardRepository.checkWinnerWhite()){
+            score=score-1000;
+        }
+
         return score;
     }
     public int[][] simulateMove1(int[][] board, String move) {

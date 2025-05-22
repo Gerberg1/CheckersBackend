@@ -97,45 +97,62 @@ public class BoardRepository {
     }
 
     public boolean checkWinner(){
-        return checkWinnerByMoves() || checkWinnerByPieces();
+        return checkWinnerBlack() || checkWinnerWhite();
     }
 
-    public boolean checkWinnerByMoves(){
+    public boolean checkWinnerBlack(){
+        return checkWinnerByMovesBlack() || checkWinnerByPiecesBlack();
+    }
+
+    public boolean checkWinnerWhite(){
+        return checkWinnerByMovesWhite() || checkWinnerByPiecesWhite();
+    }
+
+    public boolean checkWinnerByMovesBlack(){
         if(isBlack&&getAllLegalMoves(board, isBlack).isEmpty()){
             System.out.println("WHITE WINS");
             return true;
         }
-        else if (!isBlack&&getAllLegalMoves(board, !isBlack).isEmpty()){
-            System.out.println("BLACK WINS");
+
+        return false;
+    }
+
+    public boolean checkWinnerByMovesWhite(){
+         if (!isBlack&&getAllLegalMoves(board, !isBlack).isEmpty()){
+            System.out.println("WHITE WINS");
             return true;
         }
-        return false;
-
-
+         return false;
     }
 
 
-    public boolean checkWinnerByPieces() {
+    public boolean checkWinnerByPiecesWhite() {
         int blacks = 0;
-        int whites = 0;
         for (int i = 7; i > -1; i--) {
             for (int j = 0; j < 8; j++) {
                 if (board[i][j] == 1 || board[i][j] == 2) {
                     blacks++;
                 }
+            }
+        }
+     if (blacks==0){
+            System.out.println("WHITE WINS");
+            return true;
+        }
+        return false;
+    }
+
+    public boolean checkWinnerByPiecesBlack() {
+        int whites = 0;
+        for (int i = 7; i > -1; i--) {
+            for (int j = 0; j < 8; j++) {
                 if (board[i][j] == 3 || board[i][j] == 4) {
-                   whites++;
+                    whites++;
                 }
             }
         }
-        System.out.println(blacks);
-        System.out.println(whites);
         if (whites==0){
             System.out.println("BLACK WINS");
-            return true;
-        }
-        else if (blacks==0){
-            System.out.println("WHITE WINS");
             return true;
         }
         return false;
@@ -312,7 +329,6 @@ public class BoardRepository {
         }
         hasJumped = true;
         hasJumpedTo = secondLetter + String.valueOf(secondNumber);
-        checkWinnerByPieces();
         checkWinner();
     }
     public void jumpKing(String positionsToMove, int piece, int firstNumber, int secondNumber, String firstPosition, String secondPosition, char firstLetter, char secondLetter){
@@ -343,7 +359,6 @@ public class BoardRepository {
         }
         hasJumpedKing = true;
         hasJumpedTo = secondLetter + String.valueOf(secondNumber);
-        checkWinnerByPieces();
         checkWinner();
     }
 
