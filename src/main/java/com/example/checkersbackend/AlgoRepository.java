@@ -8,6 +8,7 @@ import java.util.Timer;
 public class AlgoRepository {
 
     int cutOffCount = 0;
+    int nodeCount = 0;
 
     private final BoardRepository boardRepository;
 
@@ -21,14 +22,14 @@ public class AlgoRepository {
 
     public String startAlgo(int[][] board, int depth, boolean isBlack) {
         cutOffCount = 0;
-       // int bestScore = isBlack ?  Integer.MAX_VALUE : Integer.MIN_VALUE;
+        // int bestScore = isBlack ?  Integer.MAX_VALUE : Integer.MIN_VALUE;
         int bestScore = isBlack ? Integer.MIN_VALUE : Integer.MAX_VALUE;
         String bestMove = "";
 
         int alpha = Integer.MIN_VALUE;
         int beta = Integer.MAX_VALUE;
 
-        endTime = System.currentTimeMillis() + 5_000;
+        endTime = System.currentTimeMillis() + 30_000;
 
         for (String move : boardRepository.getAllLegalMoves(board, isBlack)) {
 
@@ -42,24 +43,52 @@ public class AlgoRepository {
             int score = alphaBeta(copyBoard, isBlack, depth, alpha, beta);
 
 
-            if ((isBlack && score > bestScore)){
+            if ((isBlack && score > bestScore)) {
                 bestScore = score;
                 bestMove = move;
-                alpha = Math.max(alpha,score);
-            } if ((!isBlack && score < bestScore)) {
+                alpha = Math.max(alpha, score);
+            }
+            if ((!isBlack && score < bestScore)) {
                 bestScore = score;
                 bestMove = move;
                 beta = Math.min(beta, score);
             }
-           if (alpha >= beta){
-               cutOffCount++;
+           if (alpha >= beta) {
                 break;
             }
-            if (System.currentTimeMillis() > endTime /*|| alpha >= beta*/) break;
+            if (System.currentTimeMillis() > endTime) {
+                break;
+            }
         }
-        System.out.println("Cut off count: "+cutOffCount);
+
+        System.out.println("Branching factor: "+ (computeEBF(nodeCount, depth)));
+        //System.out.println("Node count: " + nodeCount);
+      // System.out.println("Cut off count: " + cutOffCount);
         return bestMove;
     }
+
+    public double computeEBF(int totalNodes, int depth) {
+        double low = 1.0;
+        double high = totalNodes;
+        double epsilon = 1e-5;
+
+        while (high - low > epsilon) {
+            double mid = (low + high) / 2;
+            double estimatedNodes = 0;
+            for (int i = 0; i <= depth; i++) {
+                estimatedNodes += Math.pow(mid, i);
+            }
+
+            if (estimatedNodes > totalNodes) {
+                high = mid;
+            } else {
+                low = mid;
+            }
+        }
+
+        return (low + high) / 2;
+    }
+
 
 
 
@@ -73,11 +102,6 @@ public class AlgoRepository {
         if (isMaxing) {
             maxScore = Integer.MIN_VALUE;
             for (String move : boardRepository.getAllLegalMoves(board, true)) {
-               /* int[][] copyBoard = new int[board.length][];
-                for (int i = 0; i < board.length; i++) {
-                    copyBoard[i] = board[i].clone();
-                }*/
-                //   int[][] copyBoard = simulateMove(move);
                 int score = minMax(simulateMove1(board, move), false, depth - 1);
                 maxScore = Math.max(score, maxScore);
             }
@@ -86,11 +110,6 @@ public class AlgoRepository {
         } else {
             minScore = Integer.MAX_VALUE;
             for (String move : boardRepository.getAllLegalMoves(board, false)) {
-                /*int[][] copyBoard = new int[board.length][];
-                for (int i = 0; i < board.length; i++) {
-                    copyBoard[i] = board[i].clone();
-                }*/
-                // int[][] copyBoard = simulateMove(move);
                 int score = minMax(simulateMove1(board, move), true, depth - 1);
                 minScore = Math.min(score, minScore);
             }
@@ -99,6 +118,7 @@ public class AlgoRepository {
     }
 
     public int alphaBeta(int[][] board, boolean isMaxing, int depth, int alpha, int beta) {
+        nodeCount++;
         int maxScore = Integer.MIN_VALUE;
         int minScore = Integer.MAX_VALUE;
 
@@ -109,11 +129,6 @@ public class AlgoRepository {
             maxScore = Integer.MIN_VALUE;
             for (String move : boardRepository.getAllLegalMoves(board, true)) {
                 if (System.currentTimeMillis() > endTime) break;
-               /* int[][] copyBoard = new int[board.length][];
-                for (int i = 0; i < board.length; i++) {
-                    copyBoard[i] = board[i].clone();
-                }*/
-                //   int[][] copyBoard = simulateMove(move);
                 int score = alphaBeta(simulateMove1(board, move), false, depth - 1, alpha, beta);
                 maxScore = Math.max(score, maxScore);
                 alpha = Math.max(alpha, maxScore);
@@ -128,11 +143,6 @@ public class AlgoRepository {
             minScore = Integer.MAX_VALUE;
             for (String move : boardRepository.getAllLegalMoves(board, false)) {
                 if (System.currentTimeMillis() > endTime) break;
-                /*int[][] copyBoard = new int[board.length][];
-                for (int i = 0; i < board.length; i++) {
-                    copyBoard[i] = board[i].clone();
-                }*/
-                // int[][] copyBoard = simulateMove(move);
                 int score = alphaBeta(simulateMove1(board, move), true, depth - 1, alpha, beta);
                 minScore = Math.min(score, minScore);
                 beta = Math.min(beta, minScore);
@@ -143,7 +153,6 @@ public class AlgoRepository {
             }
 
         }
-
 
         return minScore;
     }
@@ -158,6 +167,7 @@ public class AlgoRepository {
                     case 1 -> {score += 5;
                         score+=i;
                         if (j>=2 && j <= 5) score +=1;} //sort brik
+
 
                     case 2 -> score += 10; //sort konge
 
