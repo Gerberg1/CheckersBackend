@@ -166,8 +166,8 @@ public class BoardRepository {
         String secondPosition = "" + positions[3] + positions[4];
         char firstLetter = positions[0];
         char secondLetter = positions[3];
-        int firstNumber = positions[1] - '0'; // b
-        int secondNumber = positions[4] - '0';// a
+        int firstNumber = positions[1] - '0';
+        int secondNumber = positions[4] - '0';
 
         int piece = board[(firstNumber - 1)][transformLetterToNumber(positions[0])];
 
@@ -197,42 +197,40 @@ public class BoardRepository {
 
 
         if (board[(secondNumber - 1)][transformLetterToNumber(secondLetter)] != 0) {//Der vi går hen
-            // System.out.println("Not an empty spot");
             return;}
 
         if ((isBlack && (piece != 1 && piece != 2)) || (!isBlack && (piece != 3 && piece != 4))) {
-            //System.out.println("Not your turn");
             return;
         }
 
         //HOPPER
         if (secondNumber - firstNumber > 1 || secondNumber - firstNumber < -1) {
             switch (piece) {
-                case 1: //VIRKER
+                case 1:
                     jumpPiece(positionsToMove, piece, firstNumber, secondNumber, firstPosition, secondPosition, firstLetter, secondLetter);
                     break;
-                case 2: //VIRKER
+                case 2:
                     jumpKing(positionsToMove, piece, firstNumber, secondNumber, firstPosition, secondPosition, firstLetter, secondLetter);
                     break;
-                case 3: //VIRKER
+                case 3:
                     jumpPiece(positionsToMove, piece, firstNumber, secondNumber, firstPosition, secondPosition, firstLetter, secondLetter);
                     break;
-                case 4: //VIRKER
+                case 4:
                     jumpKing(positionsToMove, piece, firstNumber, secondNumber, firstPosition, secondPosition, firstLetter, secondLetter);
             }
             //GÅR
         } else {
             switch (piece) {
-                case 1: //VIRKER
+                case 1:
                     movePiece(piece, firstNumber, secondNumber, firstPosition, secondPosition, firstLetter, secondLetter);
                     break;
-                case 2: //VIRKER
+                case 2:
                     moveKing(piece, firstNumber, secondNumber, firstPosition, secondPosition, firstLetter, secondLetter);
                     break;
-                case 3: //VIRKER
+                case 3:
                     movePiece(piece, firstNumber, secondNumber, firstPosition, secondPosition, firstLetter, secondLetter);
                     break;
-                case 4: //VIRKER
+                case 4:
                     moveKing(piece, firstNumber, secondNumber, firstPosition, secondPosition, firstLetter, secondLetter);
                     break;
             }
