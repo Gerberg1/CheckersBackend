@@ -7,6 +7,8 @@ import java.util.Timer;
 @Repository
 public class AlgoRepository {
 
+    int cutOffCount = 0;
+
     private final BoardRepository boardRepository;
 
 
@@ -18,6 +20,7 @@ public class AlgoRepository {
 
 
     public String startAlgo(int[][] board, int depth, boolean isBlack) {
+        cutOffCount = 0;
        // int bestScore = isBlack ?  Integer.MAX_VALUE : Integer.MIN_VALUE;
         int bestScore = isBlack ? Integer.MIN_VALUE : Integer.MAX_VALUE;
         String bestMove = "";
@@ -48,11 +51,13 @@ public class AlgoRepository {
                 bestMove = move;
                 beta = Math.min(beta, score);
             }
-            if (alpha >= beta){
+           if (alpha >= beta){
+               cutOffCount++;
                 break;
             }
-            if (System.currentTimeMillis() > endTime || alpha >= beta) break;
+            if (System.currentTimeMillis() > endTime /*|| alpha >= beta*/) break;
         }
+        System.out.println("Cut off count: "+cutOffCount);
         return bestMove;
     }
 
@@ -112,8 +117,9 @@ public class AlgoRepository {
                 int score = alphaBeta(simulateMove1(board, move), false, depth - 1, alpha, beta);
                 maxScore = Math.max(score, maxScore);
                 alpha = Math.max(alpha, maxScore);
-                if (alpha >= beta){
-                    break;
+               if (alpha >= beta){
+                   cutOffCount++;
+                  break;
                 }
             }
             return maxScore;
@@ -131,6 +137,7 @@ public class AlgoRepository {
                 minScore = Math.min(score, minScore);
                 beta = Math.min(beta, minScore);
                 if (alpha >= beta){
+                    cutOffCount++;
                     break;
                 }
             }
