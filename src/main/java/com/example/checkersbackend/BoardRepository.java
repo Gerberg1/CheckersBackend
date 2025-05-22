@@ -105,7 +105,7 @@ public class BoardRepository {
             System.out.println("WHITE WINS");
             return true;
         }
-        else if (!isBlack&&getAllLegalMoves(board, isBlack).isEmpty()){
+        else if (!isBlack&&getAllLegalMoves(board, !isBlack).isEmpty()){
             System.out.println("BLACK WINS");
             return true;
         }
@@ -121,13 +121,15 @@ public class BoardRepository {
         for (int i = 7; i > -1; i--) {
             for (int j = 0; j < 8; j++) {
                 if (board[i][j] == 1 || board[i][j] == 2) {
-                    blacks = blacks++;
+                    blacks++;
                 }
                 if (board[i][j] == 3 || board[i][j] == 4) {
-                    whites = whites++;
+                   whites++;
                 }
             }
         }
+        System.out.println(blacks);
+        System.out.println(whites);
         if (whites==0){
             System.out.println("BLACK WINS");
             return true;
@@ -220,7 +222,6 @@ public class BoardRepository {
 
 
         }
-        checkWinner();
 
     }
 
